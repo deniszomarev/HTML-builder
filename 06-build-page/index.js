@@ -1,6 +1,7 @@
 const fs = require("fs");
 const rimraf = require("rimraf");
 const { copyFile } = require("fs/promises");
+const path = require("path");
 
 async function createFolder() {
   try {
@@ -97,6 +98,40 @@ async function createAssets() {
     await fs.promises.mkdir("./06-build-page/project-dist/assets", {
       recursive: true,
     });
+    fs.readdir(
+      "./06-build-page/assets",
+      { withFileTypes: true },
+      (err, data) => {
+        if (err) throw err;
+        for (let el of data) {
+          if (el.isFile()) {
+            fs.copyFile(
+              path.join("./06-build-page/assets", el.name),
+              path.join("./06-build-page/project-dist/assets", el.name),
+              (err) => {
+                if (err) throw err;
+              }
+            );
+          } else if (el.isDirectory()) {
+            fs.readdir("./06-build-page/project-dist/assets", (err, data) => {
+              if (err) throw err;
+              for (let elem of data) {
+                fs.access(path.join("./06-build-page/assets", elem), (err) => {
+                  if (err) {
+                    fs.rm(
+                      path.join("./06-build-page/project-dist/assets", elem),
+                      (err) => {
+                        if (err) throw err;
+                      }
+                    );
+                  }
+                });
+              }
+            });
+          }
+        }
+      }
+    );
   } catch {
     console.log("mkdir cant create assets");
   }
