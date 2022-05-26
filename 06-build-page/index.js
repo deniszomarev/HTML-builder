@@ -4,18 +4,11 @@ const { copyFile } = require("fs/promises");
 
 async function createFolder() {
   try {
-    //await fs.promises.access("./06-build-page/project-dist/");
-    // rimraf("./06-build-page/project-dist/", function () {
-    //   console.log("cleared project-dist");
-    // });
     await fs.promises.mkdir("./06-build-page/project-dist/", {
       recursive: true,
     });
   } catch {
     console.log("rimraf err");
-    // await fs.promises.mkdir("./06-build-page/project-dist/", {
-    //   recursive: true,
-    // });
   }
 }
 
@@ -33,7 +26,6 @@ async function createHTML() {
       "./06-build-page/project-dist/index.html",
       "utf8"
     );
-    //console.log(newTemplate);
     await htmlInject(newTemplate);
   } catch {
     console.log("index.html could not be read");
@@ -53,15 +45,12 @@ async function htmlInject(data) {
     "./06-build-page/components/footer.html",
     { encoding: "utf8" }
   );
-  //console.log(data);
   if (data) {
     data = data
       .replace("{{header}}", header)
       .replace("{{articles}}", articles)
       .replace("{{footer}}", footer);
   }
-  //console.log(data);
-
   await fs.promises.writeFile("./06-build-page/project-dist/index.html", data);
 }
 
@@ -105,27 +94,12 @@ async function createStyles() {
 
 async function createAssets() {
   try {
-    // await fs.promises.access("./06-build-page/project-dist/assets/");
-    // rimraf("./06-build-page/project-dist/assets", function () {
-    //   console.log("cleared project-dist/assets");
-    // });
     await fs.promises.mkdir("./06-build-page/project-dist/assets", {
       recursive: true,
     });
   } catch {
     console.log("mkdir cant create assets");
   }
-
-  //   const srcDir = `./06-build-page/assets/`;
-  //   const destDir = `./06-build-page/project-dist/assets`;
-
-  //   await fse.copy(srcDir, destDir, { overwrite: true }, function (err) {
-  //     if (err) {
-  //       console.error(err);
-  //     } else {
-  //       console.log("/project-dist/assets copied");
-  //     }
-  //   });
 }
 
 async function buildPage() {
